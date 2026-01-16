@@ -28,46 +28,90 @@
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC ## REQUIRED - SELECT CLASSIC COMPUTE
 -- MAGIC
--- MAGIC Before executing cells in this notebook, please select your classic compute cluster in the lab. Be aware that **Serverless** is enabled by default and you have a Shared SQL warehouse.
+-- MAGIC ## Setup
 -- MAGIC
--- MAGIC <!-- ![Select Cluster](./Includes/images/selecting_cluster_info.png) -->
--- MAGIC
--- MAGIC Follow these steps to select the classic compute cluster:
--- MAGIC
--- MAGIC
--- MAGIC 1. Navigate to the top-right of this notebook and click the drop-down menu to select your cluster. By default, the notebook will use **Serverless**.
--- MAGIC
--- MAGIC 2. If your cluster is available, select it and continue to the next cell. If the cluster is not shown:
--- MAGIC
--- MAGIC    - Click **More** in the drop-down.
--- MAGIC
--- MAGIC    - In the **Attach to an existing compute resource** window, use the first drop-down to select your unique cluster.
--- MAGIC
--- MAGIC **NOTE:** If your cluster has terminated, you might need to restart it in order to select it. To do this:
--- MAGIC
--- MAGIC 1. Right-click on **Compute** in the left navigation pane and select *Open in new tab*.
--- MAGIC
--- MAGIC 2. Find the triangle icon to the right of your compute cluster name and click it.
--- MAGIC
--- MAGIC 3. Wait a few minutes for the cluster to start.
--- MAGIC
--- MAGIC 4. Once the cluster is running, complete the steps above to select your cluster.
 
 -- COMMAND ----------
 
--- MAGIC %md
--- MAGIC
--- MAGIC ## A. Classroom Setup
--- MAGIC
--- MAGIC Run the following cell to configure your working environment for this notebook.
--- MAGIC
--- MAGIC **NOTE:** The `DA` object is only used in Databricks Academy courses and is not available outside of these courses. It will dynamically reference the information needed to run the course in the lab environment.
+-- Sample data for MERGE INTO
+DROP TABLE IF EXISTS main_users_target;
+-- Create the target table
+CREATE OR REPLACE TABLE main_users_target (
+    id INT,
+    first_name STRING,
+    email STRING,
+    sign_up_date DATE,
+    status STRING
+);
+-- Insert sample data into the target table
+-- INSERT INTO main_users_target VALUES
+-- (1, 'Panagiotis', 'panagiotis@example.com', '2024-01-01', 'current'),
+-- (2, 'Samarth', 'samarth@example.com', '2024-01-05', 'current'),
+-- (3, 'Zebi', 'zebi@example.com', '2024-01-10', 'current'),
+-- (4, 'Mark', 'mark@leadinst.com', '2024-02-10', 'current');
 
 -- COMMAND ----------
 
--- MAGIC %run ./Includes/Classroom-Setup-09
+-- MAGIC %python
+-- MAGIC spark.sql('''
+-- MAGIC INSERT INTO main_users_target VALUES
+-- MAGIC (1, 'Panagiotis', 'panagiotis@example.com', '2024-01-01', 'current'),
+-- MAGIC (2, 'Samarth', 'samarth@example.com', '2024-01-05', 'current'),
+-- MAGIC (3, 'Zebi', 'zebi@example.com', '2024-01-10', 'current'),
+-- MAGIC (4, 'Mark', 'mark@leadinst.com', '2024-02-10', 'current')
+-- MAGIC ''')
+-- MAGIC print('Created the main_users_target table.')
+
+-- COMMAND ----------
+
+DROP TABLE IF EXISTS update_users_source;
+-- Create the source table
+CREATE OR REPLACE TABLE update_users_source (
+    id INT,
+    first_name STRING,
+    email STRING,
+    sign_up_date DATE,
+    status STRING
+);
+-- Insert sample data into the source table
+
+-- COMMAND ----------
+
+-- MAGIC %python
+-- MAGIC spark.sql('''
+-- MAGIC INSERT INTO update_users_source VALUES
+-- MAGIC (1, 'Panagiotis', 'panagiotis@example.com', '2024-01-01', 'delete'),  -- User to delete
+-- MAGIC (2, 'Samarth', 'samarth123@newemail.com', '2024-01-05', 'update'),    -- Update Samarths's email
+-- MAGIC (5, 'Owen', 'owent@theemail.com', '2023-01-15', 'new'),               -- New user to insert
+-- MAGIC (6, 'Eva', 'ej@princessemail.com', '2023-01-15', 'new')               -- New user to insert
+-- MAGIC ''')
+-- MAGIC print('Created the update_users_source table.')
+
+-- COMMAND ----------
+
+DROP TABLE IF EXISTS new_users_source;
+-- Create the source table
+CREATE OR REPLACE TABLE new_users_source (
+    id INT,
+    first_name STRING,
+    email STRING,
+    sign_up_date DATE,
+    status STRING,
+    country STRING
+);
+-- Insert sample data into the source table
+
+-- COMMAND ----------
+
+-- MAGIC %python
+-- MAGIC spark.sql('''
+-- MAGIC INSERT INTO new_users_source VALUES
+-- MAGIC (7, 'Kristi', 'kristi@theemail.com', '2023-01-15', 'new', 'USA'),               -- New user to insert
+-- MAGIC (8, 'Mohammad', 'mohammad@princessemail.com', '2023-01-15', 'new','Pakistan'),  -- New user to insert
+-- MAGIC (9, 'Christos', 'christos@example.com', '2024-01-01', 'new','Greece');          -- New user to insert
+-- MAGIC ''')
+-- MAGIC print('Created the new_users_source table.')
 
 -- COMMAND ----------
 

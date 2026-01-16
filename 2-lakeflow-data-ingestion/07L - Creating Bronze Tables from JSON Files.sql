@@ -24,57 +24,24 @@
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC ## REQUIRED - SELECT CLASSIC COMPUTE
 -- MAGIC
--- MAGIC Before executing cells in this notebook, please select your classic compute cluster in the lab. Be aware that **Serverless** is enabled by default and you have a Shared SQL warehouse.
--- MAGIC
--- MAGIC <!-- ![Select Cluster](./Includes/images/selecting_cluster_info.png) -->
--- MAGIC
--- MAGIC Follow these steps to select the classic compute cluster:
--- MAGIC
--- MAGIC
--- MAGIC 1. Navigate to the top-right of this notebook and click the drop-down menu to select your cluster. By default, the notebook will use **Serverless**.
--- MAGIC
--- MAGIC 2. If your cluster is available, select it and continue to the next cell. If the cluster is not shown:
--- MAGIC
--- MAGIC    - Click **More** in the drop-down.
--- MAGIC
--- MAGIC    - In the **Attach to an existing compute resource** window, use the first drop-down to select your unique cluster.
--- MAGIC
--- MAGIC **NOTE:** If your cluster has terminated, you might need to restart it in order to select it. To do this:
--- MAGIC
--- MAGIC 1. Right-click on **Compute** in the left navigation pane and select *Open in new tab*.
--- MAGIC
--- MAGIC 2. Find the triangle icon to the right of your compute cluster name and click it.
--- MAGIC
--- MAGIC 3. Wait a few minutes for the cluster to start.
--- MAGIC
--- MAGIC 4. Once the cluster is running, complete the steps above to select your cluster.
+-- MAGIC ## Setup
+-- MAGIC Download **2-lakeflow-data-ingestion/06-json-data**
+-- MAGIC to local computer
+
+-- COMMAND ----------
+
+CREATE VOLUME IF NOT EXISTS workspace.default.demo_07L_json_raw_data; --create volume directory
 
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC
--- MAGIC ## A. Classroom Setup
--- MAGIC
--- MAGIC Run the following cell to configure your working environment for this notebook.
--- MAGIC
--- MAGIC **NOTE:** The `DA` object is only used in Databricks Academy courses and is not available outside of these courses. It will dynamically reference the information needed to run the course in the lab environment.
+-- MAGIC ### upload files **2-lakeflow-data-ingestion/07L-json-data** to demo_07L_json_raw_data
 
 -- COMMAND ----------
 
--- MAGIC %run ./Includes/Classroom-Setup-07L
-
--- COMMAND ----------
-
--- MAGIC %md
--- MAGIC Run the cell below to view your default catalog and schema. Notice that your default catalog is **dbacademy** and your default schema is your unique **labuser** schema.
--- MAGIC
--- MAGIC **NOTE:** The default catalog and schema are pre-configured for you to avoid the need to specify the three-level name when writing your tables (i.e., catalog.schema.table).
-
--- COMMAND ----------
-
-SELECT current_catalog(), current_schema()
+-- DBTITLE 1,checking files
+LIST '/Volumes/workspace/default/demo_07l_json_raw_data/07L-json-data/'
 
 -- COMMAND ----------
 
@@ -89,29 +56,10 @@ SELECT current_catalog(), current_schema()
 
 -- COMMAND ----------
 
--- MAGIC %md
--- MAGIC 1. In the cell below, view the value of the Python variable `DA.paths.working_dir`. This variable will reference your **dbacademy.ops.labuser** volume, as each user has a different source volume. This variable is created within the classroom setup script to dynamically reference your unique volume.
--- MAGIC
--- MAGIC    Run the cell and review the results. You’ll notice that the `DA.paths.working_dir` variable points to your `/Volumes/dbacademy/ops/labuser` volume.
--- MAGIC
--- MAGIC **Note:** Instead of using the `DA.paths.working_dir` variable, you could also specify the path name directly by right clicking on your volume and selecting **Copy volume path**. 
-
--- COMMAND ----------
-
--- MAGIC %python
--- MAGIC print(DA.paths.working_dir)
-
--- COMMAND ----------
-
--- MAGIC %md
--- MAGIC Run the cell to view the data in the `/Volumes/dbacademy/ops/your-labuser-name/json_demo_files/lab_kafka_events.json` file in the location from above.
-
--- COMMAND ----------
-
 -- MAGIC %python
 -- MAGIC spark.sql(f'''
 -- MAGIC           SELECT * 
--- MAGIC           FROM json.`{DA.paths.working_dir}/json_demo_files/lab_kafka_events.json`
+-- MAGIC           FROM json.`/Volumes/workspace/default/demo_07l_json_raw_data/07L-json-data/lab_kafka_events.json`
 -- MAGIC           ''').display()
 
 -- COMMAND ----------
@@ -119,7 +67,7 @@ SELECT current_catalog(), current_schema()
 -- MAGIC %md
 -- MAGIC ### B2. Create the Raw Bronze Table
 -- MAGIC
--- MAGIC Inspect and run the code below to ingest the raw JSON file `/Volumes/dbacademy/ops/your-labuser-name/json_demo_files/lab_kafka_events.json` and create the **lab7_lab_kafka_events_raw** table.
+-- MAGIC Inspect and run the code below to ingest the raw JSON file `/Volumes/workspace/default/demo_07l_json_raw_data/07L-json-data/lab_kafka_events.json` and create the **lab7_lab_kafka_events_raw** table.
 -- MAGIC
 -- MAGIC Notice the following:
 -- MAGIC - The **value** column is decoded.
@@ -134,7 +82,7 @@ SELECT
   *,
   cast(unbase64(value) as STRING) as decoded_value
 FROM read_files(
-        DA.paths_working_dir || '/json_demo_files/lab_kafka_events.json',
+        '/Volumes/workspace/default/demo_07l_json_raw_data/07L-json-data/lab_kafka_events.json',
         format => "json", 
         schema => '''
           key STRING, 
@@ -196,11 +144,6 @@ FROM lab7_lab_kafka_events_raw;
 -- MAGIC   - **event_type** STRING
 -- MAGIC   - **event_timestamp** TIMESTAMP
 -- MAGIC   - **items** (STRUCT or VARIANT) depending on the method you used.
-
--- COMMAND ----------
-
-SELECT *
-FROM lab7_lab_kafka_events_flattened_solution
 
 -- COMMAND ----------
 
