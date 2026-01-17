@@ -53,11 +53,11 @@ SELECT current_catalog(), current_schema()
 -- MAGIC %md
 -- MAGIC ### B1. Inspecting CSV files
 -- MAGIC
--- MAGIC 1. List available CSV files from `dbacademy_ecommerce/v01/raw/sales-csv` directory. Confirm that 4 CSV files exist in the volume.
+-- MAGIC 1. List available CSV files from `/Volumes/main/dbdemos_data_ingestion/raw_data/user_csv_pipe_delimited` directory.
 
 -- COMMAND ----------
 
-LIST '/Volumes/dbacademy_ecommerce/v01/raw/sales-csv'
+LIST '/Volumes/main/dbdemos_data_ingestion/raw_data/user_csv_pipe_delimited'
 
 -- COMMAND ----------
 
