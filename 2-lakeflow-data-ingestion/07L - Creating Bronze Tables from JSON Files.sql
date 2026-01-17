@@ -26,7 +26,7 @@
 -- MAGIC %md
 -- MAGIC
 -- MAGIC ## Setup
--- MAGIC Download **2-lakeflow-data-ingestion/06-json-data**
+-- MAGIC Download **2-lakeflow-data-ingestion/07L-json-data**
 -- MAGIC to local computer
 
 -- COMMAND ----------
