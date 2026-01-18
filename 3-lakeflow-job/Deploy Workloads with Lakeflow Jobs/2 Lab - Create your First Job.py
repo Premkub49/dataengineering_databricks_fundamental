@@ -35,34 +35,6 @@
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## REQUIRED - SELECT CLASSIC COMPUTE (The cluster named 'labuser')
-# MAGIC
-# MAGIC Before executing cells in this notebook, please select your classic compute cluster in the lab. Be aware that **Serverless** is enabled by default.
-# MAGIC
-# MAGIC Follow these steps to select the classic compute cluster:
-# MAGIC
-# MAGIC
-# MAGIC 1. Navigate to the top-right of this notebook and click the drop-down menu to select your cluster. By default, the Notebook will use **Serverless**.
-# MAGIC
-# MAGIC 2. If your cluster is available, select it and continue to the next cell. If the cluster is not shown:
-# MAGIC
-# MAGIC    - Click **More** in the drop-down.
-# MAGIC
-# MAGIC    - In the **Attach to an existing compute resource** window, use the first drop-down to select your unique cluster.
-# MAGIC
-# MAGIC **NOTE:** If your cluster has terminated, you might need to restart it in order to select it. To do this:
-# MAGIC
-# MAGIC 1. Right-click on **Compute** in the left navigation pane and select *Open in new tab*.
-# MAGIC
-# MAGIC 2. Find the triangle icon to the right of your compute cluster name and click it.
-# MAGIC
-# MAGIC 3. Wait a few minutes for the cluster to start.
-# MAGIC
-# MAGIC 4. Once the cluster is running, complete the steps above to select your cluster.
-
-# COMMAND ----------
-
-# MAGIC %md
 # MAGIC ## Setup
 # MAGIC Open marketplace and add delta share with
 # MAGIC
